@@ -9,7 +9,7 @@ public class ProductClient
         _httpClient = httpClient;
     }
 
-    public async Task<IReadOnlyCollection<ProductDto>> GetProductListAsync()
+    public async Task<IReadOnlyCollection<ProductDto>?> GetProductListAsync()
     {
         var products = await _httpClient.GetFromJsonAsync<IReadOnlyCollection<ProductDto>>("/product");
         return products;

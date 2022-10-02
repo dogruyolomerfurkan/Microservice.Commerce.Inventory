@@ -7,10 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMongoDB()
                 .AddMongoDBRepository<Inventory>("Inventory");
 
-builder.Services.AddHttpClient<ProductClient>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:2500");
-});
+builder.Services.AddClients();
+
 
 builder.Services.AddControllers();
 
