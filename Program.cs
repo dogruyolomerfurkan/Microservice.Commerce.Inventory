@@ -1,14 +1,13 @@
+using Commerce.Core.MassTransit;
 using Commerce.Core.MongoDB;
-using Commerce.Inventory.Service.Clients;
 using Commerce.Inventory.Service.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMongoDB()
-                .AddMongoDBRepository<Inventory>("Inventory");
-
-builder.Services.AddClients();
-
+                .AddMongoDBRepository<Inventory>("Inventory")
+                .AddMongoDBRepository<Product>("Product")
+                .AddMassTransitWithRabbitMq();
 
 builder.Services.AddControllers();
 
