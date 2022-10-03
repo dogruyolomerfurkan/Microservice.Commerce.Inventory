@@ -1,5 +1,4 @@
 using Commerce.Core;
-using Commerce.Inventory.Service.Clients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Commerce.Inventory.Service.Controllers;
@@ -9,11 +8,12 @@ namespace Commerce.Inventory.Service.Controllers;
 public class InventoryController : ControllerBase
 {
     private readonly IRepository<Entities.Inventory> _inventoryRepository;
-    private readonly ProductClient _productClient;
-    public InventoryController(IRepository<Entities.Inventory> inventoryRepository, ProductClient productClient)
+    private readonly IRepository<Entities.Product> _productRepository;
+
+    public InventoryController(IRepository<Entities.Inventory> inventoryRepository, IRepository<Entities.Product> productRepository)
     {
         _inventoryRepository = inventoryRepository;
-        _productClient = productClient;
+        _productRepository = productRepository;
     }
 
     [HttpGet("{userId}")]
@@ -22,8 +22,9 @@ public class InventoryController : ControllerBase
         if (userId == Guid.Empty) return BadRequest();
 
         var inventoryItems = await _inventoryRepository.GetListAsync(item => item.UserId == userId);
+        var productIds = inventoryItems.Select(p => p.ProductId);
 
-        var productList = await _productClient.GetProductListAsync();
+        var productList = await _productRepository.GetListAsync(product => productIds.Contains(product.Id));
 
         var inventoryList = inventoryItems.Select(inventoryItem =>
         {
